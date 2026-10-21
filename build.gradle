@@ -1,0 +1,55 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        aurel {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+    def modVersion = project.version.toString()
+    inputs.property 'version', modVersion
+    filesMatching('fabric.mod.json') { expand version: modVersion }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    withSourcesJar()
+}
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+    options.encoding = 'UTF-8'
+}
+
+// Keep the standalone checks portable, including when using gradlew.bat on Windows.
+sourceSets {
+    coreTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+tasks.register('coreCheck', JavaExec) {
+    dependsOn tasks.named('coreTestClasses')
+    classpath = sourceSets.coreTest.runtimeClasspath
+    mainClass = 'fr.clax.aurel.ui.CoreChecks'
+    enableAssertions = true
+}
+tasks.named('check') { dependsOn 'coreCheck' }
+
+jar { from('LICENSE') }

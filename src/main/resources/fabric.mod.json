@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "aurel",
+  "version": "${version}",
+  "name": "Aurel Menu",
+  "description": "Une interface client personnalisable, animée et élégante. Ouvrir avec Inser.",
+  "authors": ["Clax"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {"client": ["fr.clax.aurel.AurelClient"]},
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
